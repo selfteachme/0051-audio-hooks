@@ -11,6 +11,17 @@ const AudioPlayer = () => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
+  const chapters = [
+    {
+      start: 0,
+      end: 15
+    },
+    {
+      start: 60,
+      end: 75
+    }
+  ]
+
   // references
   const audioPlayer = useRef();   // reference our audio component
   const progressBar = useRef();   // reference our progress bar
@@ -83,8 +94,23 @@ const AudioPlayer = () => {
       <div className={styles.currentTime}>{calculateTime(currentTime)}</div>
 
       {/* progress bar */}
-      <div>
+      <div className={styles.progressBarWrapper}>
         <input type="range" className={styles.progressBar} defaultValue="0" ref={progressBar} onChange={changeRange} />
+        {chapters.map((chapter, i) => {
+          const leftStyle = chapter.start / duration * 100;
+          const widthStyle = (chapter.end - chapter.start) / duration * 100;
+          console.table({ i, leftStyle, widthStyle })
+          return (
+            <div
+              key={i}
+              className={`${styles.chapter} ${chapter.start == 0 && styles.start} ${chapter.end == duration && styles.end}`}
+              style={{
+                '--left': `${leftStyle}%`,
+                '--width': `${widthStyle}%`,
+              }}
+            ></div>
+          )
+        })}
       </div>
 
       {/* duration */}
