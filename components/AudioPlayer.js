@@ -5,7 +5,7 @@ import { BsArrowRightShort } from "react-icons/bs"
 import { FaPlay } from "react-icons/fa"
 import { FaPause } from "react-icons/fa"
 
-const AudioPlayer = () => {
+const AudioPlayer = ({ timeJump }) => {
   // state
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -28,6 +28,16 @@ const AudioPlayer = () => {
   const animationRef = useRef();  // reference the animation
 
   useEffect(() => {
+    if (timeJump) {
+      timeTravel(timeJump);
+      setIsPlaying(true);
+      play();
+    } else {
+      timeTravel(0);
+    }
+  }, [timeJump])
+
+  useEffect(() => {
     const seconds = Math.floor(audioPlayer.current.duration);
     setDuration(seconds);
     progressBar.current.max = seconds;
@@ -41,12 +51,16 @@ const AudioPlayer = () => {
     return `${returnedMinutes}:${returnedSeconds}`;
   }
 
+  const play = () => {
+    audioPlayer.current.play();
+    animationRef.current = requestAnimationFrame(whilePlaying)
+  }
+
   const togglePlayPause = () => {
     const prevValue = isPlaying;
     setIsPlaying(!prevValue);
     if (!prevValue) {
-      audioPlayer.current.play();
-      animationRef.current = requestAnimationFrame(whilePlaying)
+      play();
     } else {
       audioPlayer.current.pause();
       cancelAnimationFrame(animationRef.current);
@@ -70,14 +84,15 @@ const AudioPlayer = () => {
   }
 
   const backThirty = () => {
-    progressBar.current.value = Number(progressBar.current.value) - 30;
-    changeRange();
+    timeTravel(Number(progressBar.current.value) - 30);
   }
 
   const forwardThirty = () => {
+    timeTravel(Number(progressBar.current.value) + 30);
+  }
 
-    progressBar.current.value = Number(progressBar.current.value) + 30;
-
+  const timeTravel = (newTime) => {
+    progressBar.current.value = newTime;
     changeRange();
   }
 
@@ -99,7 +114,6 @@ const AudioPlayer = () => {
         {chapters.map((chapter, i) => {
           const leftStyle = chapter.start / duration * 100;
           const widthStyle = (chapter.end - chapter.start) / duration * 100;
-          console.table({ i, leftStyle, widthStyle })
           return (
             <div
               key={i}
