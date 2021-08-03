@@ -43,6 +43,13 @@ const AudioPlayer = ({ timeJump }) => {
     progressBar.current.max = seconds;
   }, [audioPlayer?.current?.loadedmetadata, audioPlayer?.current?.readyState]);
 
+  useEffect(() => {
+    if (currentTime == duration) {
+      togglePlayPause();
+      timeTravel(0);
+    }
+  }, [currentTime]);
+
   const calculateTime = (secs) => {
     const minutes = Math.floor(secs / 60);
     const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
