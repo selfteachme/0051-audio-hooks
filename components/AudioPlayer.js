@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import styles from "../styles/AudioPlayer.module.css";
 import { BsArrowLeftShort } from "react-icons/bs"
 import { BsArrowRightShort } from "react-icons/bs"
@@ -69,18 +69,18 @@ const AudioPlayer = ({ chapters, timeJump, track }) => {
   )
 }
 
-AudioPlayer.propTypes = {
-  chapters: PropTypes.arrayOf(PropTypes.shape({
-    start: PropTypes.number,
-    end: PropTypes.number
-  })),
-  timeJump: PropTypes.number,
-  track: PropTypes.string.isRequired
-};
+// AudioPlayer.propTypes = {
+//   chapters: PropTypes.arrayOf(PropTypes.shape({
+//     start: PropTypes.number,
+//     end: PropTypes.number
+//   })),
+//   timeJump: PropTypes.number,
+//   track: PropTypes.string.isRequired
+// };
 
-AudioPlayer.defaultProps = {
-  chapters: [],
-  timeJump: 0,
-};
+// AudioPlayer.defaultProps = {
+//   chapters: [],
+//   timeJump: 0,
+// };
 
 export { AudioPlayer }
