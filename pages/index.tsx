@@ -28,7 +28,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <AudioPlayer timeJump={t} chapters={chapters} track={track} />
+        <AudioPlayer timeJump={Number(t)} chapters={chapters} track={track} />
       </main>
     </div>
   )

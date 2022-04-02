@@ -8,23 +8,23 @@ const useAudioPlayer = () => {
   const [timeJump, setTimeJump] = useState(0);
 
   // references
-  const audioPlayer = useRef();   // reference our audio component
-  const progressBar = useRef();   // reference our progress bar
-  const animationRef = useRef();  // reference the animation
+  const audioPlayer = useRef<HTMLAudioElement>(null);   // reference our audio component
+  const progressBar = useRef<HTMLInputElement>(null);   // reference our progress bar
+  const animationRef = useRef<number>();  // reference the animation
 
   // handle time jumps
   useEffect(() => {
     timeTravel(timeJump);
-    setIsPlaying(true);
-    play();
+    // setIsPlaying(true);
+    // play();
   }, [timeJump])
 
   // grabs the loaded metadata
   useEffect(() => {
-    const seconds = Math.floor(audioPlayer.current.duration);
+    const seconds = Math.floor(audioPlayer.current!.duration);
     setDuration(seconds);
-    progressBar.current.max = seconds;
-  }, [audioPlayer?.current?.loadedmetadata, audioPlayer?.current?.readyState])
+    progressBar.current!.max = seconds.toString();
+  }, [audioPlayer?.current?.onloadedmetadata, audioPlayer?.current?.readyState])
 
 
   // when you get to the end
@@ -35,7 +35,7 @@ const useAudioPlayer = () => {
     }
   }, [currentTime, duration]);
 
-  const calculateTime = (secs) => {
+  const calculateTime = (secs: number) => {
     const minutes = Math.floor(secs / 60);
     const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
     const seconds = Math.floor(secs % 60);
@@ -44,7 +44,7 @@ const useAudioPlayer = () => {
   }
 
   const play = () => {
-    audioPlayer.current.play();
+    audioPlayer.current!.play();
     animationRef.current = requestAnimationFrame(whilePlaying)
   }
 
@@ -54,37 +54,37 @@ const useAudioPlayer = () => {
     if (!prevValue) {
       play();
     } else {
-      audioPlayer.current.pause();
-      cancelAnimationFrame(animationRef.current);
+      audioPlayer.current!.pause();
+      cancelAnimationFrame(animationRef.current!);
     }
   }
 
   const whilePlaying = () => {
-    progressBar.current.value = audioPlayer?.current.currentTime;
+    progressBar.current!.value = String(audioPlayer.current!.currentTime);
     changePlayerCurrentTime();
     animationRef.current = requestAnimationFrame(whilePlaying);
   }
 
   const changeRange = () => {
-    audioPlayer.current.currentTime = progressBar.current.value;
+    audioPlayer.current!.currentTime = Number(progressBar.current!.value);
     changePlayerCurrentTime();
   }
 
   const changePlayerCurrentTime = () => {
-    progressBar.current.style.setProperty('--seek-before-width', `${progressBar.current.value / duration * 100}%`)
-    setCurrentTime(progressBar.current.value);
+    progressBar.current!.style.setProperty('--seek-before-width', `${Number(progressBar.current!.value) / duration * 100}%`)
+    setCurrentTime(Number(progressBar.current!.value));
   }
 
   const backThirty = () => {
-    timeTravel(Number(progressBar.current.value) - 30);
+    timeTravel(Number(progressBar.current!.value) - 30);
   }
 
   const forwardThirty = () => {
-    timeTravel(Number(progressBar.current.value) + 30);
+    timeTravel(Number(progressBar.current!.value) + 30);
   }
 
-  const timeTravel = (newTime) => {
-    progressBar.current.value = newTime;
+  const timeTravel = (newTime: number) => {
+    progressBar.current!.value = String(newTime);
     changeRange();
   }
 
